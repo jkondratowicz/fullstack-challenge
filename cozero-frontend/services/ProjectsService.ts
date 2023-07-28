@@ -8,6 +8,7 @@ import {
 } from "../interfaces/project.interface";
 import HTTPService from "./HTTPService";
 import LocalStorageService from "./LocalStorageService";
+import { ErrorResponse } from "../interfaces/error.interface";
 
 class ProjectsService {
     public async fetchProjects(): Promise<Project[] | undefined> {
@@ -57,7 +58,7 @@ class ProjectsService {
         }
     }
 
-    public async updateProject(updatedProject: UpdateProjectDto): Promise<UpdateProjectResult | undefined> {
+    public async updateProject(updatedProject: UpdateProjectDto): Promise<UpdateProjectResult | ErrorResponse | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
             return HTTPService.put(`projects/${updatedProject.id}`, updatedProject, jwtToken)
@@ -67,7 +68,7 @@ class ProjectsService {
     }
 
 
-    public async createProject(createProjectDto: CreateProjectDto): Promise<Project | undefined> {
+    public async createProject(createProjectDto: CreateProjectDto): Promise<Project | ErrorResponse | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
             return HTTPService.post<Project>(`projects/create`, createProjectDto, jwtToken)

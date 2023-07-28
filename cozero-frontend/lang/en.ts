@@ -26,6 +26,7 @@ export enum LanguageEN {
     CO2E_CALCULATION_C2A = 'Learn how to calculate your CO2e emissions here.',
     LISTING_PROPOSALS='Listing proposals',
     ADD_PROPOSAL_ENTER='Press enter to add it to the list.',
+    LISTING_PROPOSAL_REQUIERD='Please add at least one proposal.',
     PROJECT='Project',
     CREATE='Create',
     UPDATE='Update',

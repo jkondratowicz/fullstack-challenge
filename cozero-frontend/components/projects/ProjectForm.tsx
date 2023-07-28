@@ -23,6 +23,7 @@ export default function ProjectForm() {
         defaultValues: createProjectDefaultValues
     })
     const { context } = useContext(AuthContext)
+    const [isListingValid, setIsListingValid] = useState<boolean>(true)
 
     const { append, remove } = useFieldArray({
         control,
@@ -74,21 +75,29 @@ export default function ProjectForm() {
         setIsProcessing(true);
 
         const project: CreateProjectDto | UpdateProjectDto = projectFormToProjectDTO(projectForm, context?.user?.email as string)
+        if (project.listing.length === 0) {
+            setIsListingValid(false);
+            setIsProcessing(false);
+            return;
+        } else {
+            setIsListingValid(true);
+        }
 
         const projectResponse = id ? await ProjectsService.updateProject(project as UpdateProjectDto) : await ProjectsService.createProject(project as CreateProjectDto);
         setIsProcessing(false);
 
-        const { title, description } = getProjectResponseTranslation(!!projectResponse, !!id);
+        const isError = !projectResponse || 'error' in projectResponse;
+        const { title, description } = getProjectResponseTranslation(!isError, !!id);
 
         toast({
             title,
             description,
-            status: projectResponse ? 'success' : 'error',
+            status: !isError ? 'success' : 'error',
             duration: 9000,
             isClosable: true,
         })
 
-        if (projectResponse) {
+        if (!isError) {
             navigate("/projects")
         }
     }
@@ -133,8 +142,9 @@ export default function ProjectForm() {
                         {translate('CO2E_CALCULATION_C2A')}
                     </FormHelperText>
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!isListingValid}>
                     <FormLabel>{translate('LISTING_PROPOSALS')}</FormLabel>
+                    {!isListingValid && <FormHelperText color='red.500'>{translate('LISTING_PROPOSAL_REQUIERD')}</FormHelperText>}
                     <Input type='text'
                         id='listing-proposal-input'
                         value={listItem}
