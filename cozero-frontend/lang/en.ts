@@ -60,4 +60,7 @@ export enum LanguageEN {
     NO_PROJECTS_DESCRIPTION='Create your first project now!',
     DONT_HAVE_AN_ACCOUNT='Don\'t have an account?',
     SIGN_UP='Sign up',
+    SEARCH_NO_RESULTS='No results found',
+    SEARCH='Search for projects',
+    SEARCH_CLEAR='Clear search',
 }
