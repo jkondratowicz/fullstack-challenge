@@ -32,5 +32,9 @@ export interface DeleteProjectResult {
     raw: any[]
     affected: number
 }
+export interface RestoreProjectResult {
+    raw: any[]
+    affected: number
+}
 
 export type UpdateProjectResult = DeleteProjectResult;

@@ -1,6 +1,7 @@
 import { Box, Text } from '@chakra-ui/react'
 
 import { useLocation, useNavigate, useRoutes } from 'react-router';
+import React from 'react';
 
 interface Props {
     title: string;
@@ -11,7 +12,8 @@ export default function MenuItem({ title, href }: Props) {
   const navigate = useNavigate()
   const router = useLocation()
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
     navigate(href)
   }
 

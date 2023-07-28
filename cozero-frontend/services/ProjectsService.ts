@@ -1,4 +1,11 @@
-import { CreateProjectDto, DeleteProjectResult, Project, UpdateProjectDto, UpdateProjectResult } from "../interfaces/project.interface";
+import {
+    CreateProjectDto,
+    DeleteProjectResult,
+    Project,
+    RestoreProjectResult,
+    UpdateProjectDto,
+    UpdateProjectResult
+} from "../interfaces/project.interface";
 import HTTPService from "./HTTPService";
 import LocalStorageService from "./LocalStorageService";
 
@@ -6,6 +13,31 @@ class ProjectsService {
     public async fetchProjects(): Promise<Project[] | undefined> {
         try {
             const projects = await HTTPService.get<Project[]>(`projects`)
+
+            return this.sortProjects(projects)
+        }
+        catch (e) {
+            console.log('Error fetching projects', e)
+            return Promise.resolve([])
+        }
+    }
+
+    public async searchProjects(query: string): Promise<Project[] | undefined> {
+        try {
+            const projects = await HTTPService.get<Project[]>(`projects/search?query=${encodeURIComponent(query)}`)
+
+            return this.sortProjects(projects)
+        }
+        catch (e) {
+            console.log('Error fetching projects', e)
+            return Promise.resolve([])
+        }
+    }
+
+    public async fetchDeletedProjects(): Promise<Project[] | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            const projects = await HTTPService.get<Project[]>(`projects/deleted`, jwtToken)
 
             return this.sortProjects(projects)
         }
@@ -51,6 +83,15 @@ class ProjectsService {
             return HTTPService.delete(`projects/${id}`, jwtToken)
         } catch (e) {
             console.log('Error deleting project', e)
+        }
+    }
+
+    public async restoreProject(id: string): Promise<RestoreProjectResult | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            return HTTPService.post(`projects/restore/${id}`, {}, jwtToken)
+        } catch (e) {
+            console.log('Error restoring project', e)
         }
     }
 

@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -11,9 +13,11 @@ export class Project {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index({ fulltext: true })
   @Column()
   name: string;
 
+  @Index({ fulltext: true })
   @Column('text')
   description: string;
 
@@ -34,4 +38,7 @@ export class Project {
 
   @UpdateDateColumn()
   updatedAt: string;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

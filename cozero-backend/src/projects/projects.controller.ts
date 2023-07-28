@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -25,6 +26,22 @@ export class ProjectsController {
   @Get()
   findAll() {
     return this.projectsService.findAll();
+  }
+
+  @Get('deleted')
+  findDeleted() {
+    return this.projectsService.findDeleted();
+  }
+
+  @SkipAuth()
+  @Get('search')
+  search(@Query('query') query: string) {
+    return this.projectsService.search(query);
+  }
+
+  @Post('restore/:id')
+  restore(@Param('id') id: string) {
+    return this.projectsService.restore(+id);
   }
 
   @SkipAuth()

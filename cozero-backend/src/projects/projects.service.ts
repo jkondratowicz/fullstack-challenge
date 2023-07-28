@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Raw, Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
@@ -20,6 +20,15 @@ export class ProjectsService {
     return this.projectsRepository.find();
   }
 
+  async findDeleted(): Promise<Project[]> {
+    return this.projectsRepository.find({
+      where: {
+        deletedAt: Not(IsNull()),
+      },
+      withDeleted: true,
+    });
+  }
+
   async findOne(id: number) {
     return await this.projectsRepository.findOneBy({ id });
   }
@@ -29,6 +38,29 @@ export class ProjectsService {
   }
 
   async remove(id: number) {
-    return this.projectsRepository.delete(id);
+    return this.projectsRepository.softDelete(id);
+  }
+
+  async restore(id: number) {
+    return this.projectsRepository.restore(id);
+  }
+
+  async search(query: string) {
+    return this.projectsRepository.find({
+      where: [
+        {
+          name: Raw(
+            (alias) => `MATCH(${alias}) AGAINST (:query IN BOOLEAN MODE)`,
+            { query },
+          ),
+        },
+        {
+          description: Raw(
+            (alias) => `MATCH(${alias}) AGAINST (:query IN BOOLEAN MODE)`,
+            { query },
+          ),
+        },
+      ],
+    });
   }
 }

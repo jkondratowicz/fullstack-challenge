@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../configs/theme'
 import Layout from '../layouts/Layout'
@@ -11,7 +10,7 @@ import CreateProjectPage from './projects/create'
 import { ProjectViewPage } from './projects/view'
 import { Auth, AuthContext, AuthContextType } from '../context/auth'
 import { useState } from 'react'
-import { UserLoginDTO } from '../interfaces/user.dto'
+import ProjectsRecycleBin from '../components/projects/ProjectsRecycleBin';
 function App() {
   const [context, setContext] = useState<Auth>()
 
@@ -28,6 +27,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/projects" element={<ProjectsList />} />
+              <Route path="/recycle-bin" element={<ProjectsRecycleBin />} />
               <Route path='/sign-up' element={<LoginPage isSignUp={true} />} />
               <Route path='/sign-in' element={<LoginPage isSignUp={false} />} />
               <Route path='/projects/create' element={<CreateProjectPage />} />
